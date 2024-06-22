@@ -11,8 +11,19 @@
 <body>
 <th:block th:replace="layout :: header"></th:block>
 <div class="container">
-    <h1 th:text=${title}></h1>
-    <table class="table">
+    <h1 th:text="${title}"></h1>
+
+    <!-- Search Form -->
+    <form th:action="@{/books/search}" method="get" class="form-inline justify-content-center mt-4 mb-4">
+        <div class="input-group">
+            <input class="form-control" type="search" placeholder="Search books..." aria-label="Search" name="keyword">
+            <div class="input-group-append">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <table class="table mt-4">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Title</th>
@@ -21,36 +32,30 @@
             <th>Category</th>
             <th>Action</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="book : ${books}">
             <td th:text="${book.id}"></td>
             <td th:text="${book.title}"></td>
             <td th:text="${book.author}"></td>
             <td th:text="${book.price}"></td>
             <td th:text="${book.category.name}"></td>
-            <td >
+            <td>
                 <button class="btn btn-primary">
-                    <a style="color: white;text-decoration: none" th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
+                    <a style="color: white; text-decoration: none" th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
                 </button>
                 <button class="btn btn-danger">
-                    <a style="color: white;text-decoration: none" th:href="@{/books/delete/{id}(id=${book.id})}" onclick="return confirm('Are you sure')">Delete</a>
+                    <a style="color: white; text-decoration: none" th:href="@{/books/delete/{id}(id=${book.id})}" onclick="return confirm('Are you sure?')">Delete</a>
                 </button>
                 <form th:action="@{/books/add-to-cart}" method="post" class="d-inline">
                     <input type="hidden" name="id" th:value="${book.getId()}">
-                    <input type="hidden" name="name"
-                           th:value="${book.getTitle()}">
-                    <input type="hidden" name="price"
-                           th:value="${book.getPrice()}">
-                    <button type="submit" class="btn btn-success"
-                            onclick="return confirm('Are you sure you want to add this book to cart?')">
-                        Add to cart</button>
+                    <input type="hidden" name="name" th:value="${book.getTitle()}">
+                    <input type="hidden" name="price" th:value="${book.getPrice()}">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to add this book to cart?')">Add to cart</button>
                 </form>
-
-
-
             </td>
-
-
         </tr>
+        </tbody>
     </table>
 </div>
 <th:block th:replace="layout :: footer"></th:block>

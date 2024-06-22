@@ -1,19 +1,20 @@
 package Tuan6.NguyenDuyDat.services;
 
-
 import Tuan6.NguyenDuyDat.entities.Book;
 import Tuan6.NguyenDuyDat.repositories.IBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 @Service
 public class BookService {
     @Autowired
     private IBookRepository bookRepository;
-
 
     public List<Book> getAllBook() {
         return bookRepository.findAll();
@@ -43,5 +44,12 @@ public class BookService {
         bookRepository.save(book);
     }
 
+    public List<Book> searchBook(String keyword) {
+        return bookRepository.searchBook(keyword);
+    }
 
+    public Page<Book> getAllBooks(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return bookRepository.findAll(pageable);
+    }
 }

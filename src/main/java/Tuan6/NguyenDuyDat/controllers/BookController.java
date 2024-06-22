@@ -7,7 +7,9 @@ import Tuan6.NguyenDuyDat.services.CartService;
 import Tuan6.NguyenDuyDat.services.CategoryService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -91,5 +93,20 @@ public class BookController {
         cart.addItems(new Item(id, name, price, quantity));
         cartService.updateCart(session, cart);
         return "redirect:/cart";
+    }
+
+    @GetMapping("/search")
+    public String searchBook(
+            @NotNull Model model,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "20") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        model.addAttribute("books", bookService.searchBook(keyword));
+        Page<Book> page = bookService.getAllBooks(pageNo, pageSize, sortBy);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "book/list";
     }
 }
